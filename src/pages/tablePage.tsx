@@ -106,10 +106,10 @@ const TablePage: NextPage = () => {
 
   return (
     <div className="w-full">
-      <ColumnFilter
+      {/* <ColumnFilter
         filteredColors={filteredColors}
         setFilteredColors={setFilteredColors}
-      />
+      /> */}
       <Table
         columns={columns}
         data={data}
