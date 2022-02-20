@@ -105,7 +105,7 @@ export default function Table({
                   {row.cells.map((cell) => {
                     return (
                       <td
-                        className="text-center p-4 select-none"
+                        className="text-center border-2 select-none"
                         {...cell.getCellProps()}
                         onClick={
                           rowOnClick &&

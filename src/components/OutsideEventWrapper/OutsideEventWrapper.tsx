@@ -9,6 +9,11 @@ interface IOutsideEventWrapper<T> {
   children: React.ReactNode;
 }
 
+/**
+ * 
+ * @param param0 
+ * @returns 
+ */
 export function OutsideEventWrapper<T extends HTMLElement = HTMLElement>({
   parentRef,
   onClickOutsideHandler,

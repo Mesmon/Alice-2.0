@@ -10,7 +10,7 @@ interface Iprops {
   placeHolder?: string | number;
 }
 
-function NumberInput({
+const NumberInput = ({
   numberValue,
   setNumberValue,
   maxValue,
@@ -18,7 +18,7 @@ function NumberInput({
   name,
   visualLength,
   placeHolder,
-}: Iprops) {
+}: Iprops) => {
   const width = visualLength ? `w-${visualLength * 2}` : "w-4";
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -69,6 +69,6 @@ function NumberInput({
       placeholder={placeHolder?.toString()}
     />
   );
-}
+};
 
 export default NumberInput;

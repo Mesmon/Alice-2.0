@@ -1,21 +1,11 @@
 import { CheckIcon } from "@heroicons/react/solid";
-import React, { useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { usePopper } from "react-popper";
 import { Portal } from "./Portal";
 import { useIsOpenDblClick } from "../../hooks/useMaxTwoCounter";
 import OutsideEventWrapper from "../OutsideEventWrapper/OutsideEventWrapper";
 import useInterval from "../../hooks/useInterval";
-import { IMovie } from "../../../@types";
-
-interface IDropdownProps {
-  value: string;
-  dataId: string | number;
-  updateMyData: (dataId: string | number, values: Partial<IMovie>) => void;
-  originalSelectedOption?: string;
-  options?: Array<string>;
-  multiSelect?: boolean;
-  allowEmpty?: boolean;
-}
+import IDropdownProps from "../../../@types/IDropdownProps";
 
 const DropdownCell = ({
   value,
@@ -64,6 +54,7 @@ const DropdownCell = ({
 
   const [referenceElement, setReferenceElement] =
     useState<HTMLDivElement | null>(null);
+
   const [popperElement, setPopperElement] = useState<HTMLDivElement | null>(
     null
   );
@@ -72,9 +63,9 @@ const DropdownCell = ({
     placement: "bottom",
   });
 
-  const closeDropdown = () => {
+  const closeDropdown = useCallback(() => {
     setIsOpen(false);
-  };
+  }, []);
 
   const indicatorColors = {
     clicked: "#60a5fa",
@@ -86,7 +77,6 @@ const DropdownCell = ({
       setIsOpen(false);
     },
     // Delay in milliseconds or null to stop it
-
     isHalfOpen ? 400 : null
   );
 
@@ -95,9 +85,10 @@ const DropdownCell = ({
       {/* renders original cell/button */}
       <div
         className={`
-          inline-flex space-x-2 min-w-[140px],
-          select-none cursor-pointer p-3,
+          cursor-fancy inline-flex h-full
+          w-full min-w-[140px] select-none
           items-center justify-center
+          space-x-2 bg-orange-300 p-3
         `}
         ref={setReferenceElement}
         onClick={() => incCount()}
@@ -142,25 +133,25 @@ const DropdownCell = ({
                 onClickOutsideHandler={closeDropdown}
                 onScrollOutsideHandler={closeDropdown}
               >
-                <ul className="w-full mt-[20px] shadow-dropdown">
+                <ul className="shadow-dropdown mt-[20px] w-full">
                   {options.map((option, idx) => (
-                    <li className={`list-none select-none bg-white`} key={idx}>
+                    <li className={`select-none list-none bg-white`} key={idx}>
                       <button
                         type="button"
                         className={`
-                          flex w-full justify-between,
-                          text-base text-left,
-                          px-[15px] py-[20px],
-                          group hover:cursor-pointer hover:font-bold hover:bg-gray-300
+                          justify-between, text-left, py-[20px],
+                          group flex
+                          w-full px-[15px]
+                          text-base hover:cursor-pointer hover:bg-gray-300 hover:font-bold
                           `}
                         onClick={() => handleOnOptionClick(option)}
                       >
-                        <span className="group-hover:bg-red-400 px-2 inline-flex text-s leading-8 font-semibold rounded-full bg-green-100 text-green-800 select-none">
+                        <span className="text-s inline-flex select-none rounded-full bg-green-100 px-2 font-semibold leading-8 text-green-800 group-hover:bg-red-400">
                           {option}
                         </span>
                         {isOptionInSelection(option) ? (
                           <CheckIcon
-                            className="w-5 h-5 text-yellow-400"
+                            className="h-5 w-5 text-yellow-400"
                             aria-hidden="true"
                           />
                         ) : null}
