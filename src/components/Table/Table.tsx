@@ -61,7 +61,7 @@ export default function Table({
             <th
               className={`sticky top-0
                 bg-gray-700 text-gray-100
-                pt-[14px] pb-[14px]
+                py-[14px]
                 z-20 text-center
                 select-none
                 ${
@@ -89,7 +89,7 @@ export default function Table({
         <GlobalTableFilter filter={globalFilter} setFilter={setGlobalFilter} />
       )}
 
-      <div className="w-11/12 m-auto max-h-[85vh] overflow-auto overflow-y-scroll rounded-t-3xl rounded-b-xl no-scrollbar border-b-4 border-gray-400">
+      <div className="w-11/12 m-auto max-h-[70vh] overflow-auto overflow-y-scroll rounded-t-3xl rounded-b-xl no-scrollbar border-b-4 border-gray-400">
         <table className={`w-full`} {...getTableProps()}>
           {/* border-separate border-spacing-4 //fistun*/}
           {renderHeader()}
