@@ -80,6 +80,35 @@ const DropdownCell = ({
     isHalfOpen ? 400 : null
   );
 
+  const renderDropdown = () => (
+    <ul className="shadow-dropdown mt-[20px] w-full">
+      {options.map((option, idx) => (
+        <li className={`select-none list-none bg-white`} key={idx}>
+          <button
+            type="button"
+            className={`
+            justify-between, text-left, py-[20px],
+            group flex
+            w-full px-[15px]
+            text-base hover:cursor-pointer hover:bg-gray-300 hover:font-bold
+            `}
+            onClick={() => handleOnOptionClick(option)}
+          >
+            <span className="text-s inline-flex select-none rounded-full bg-green-100 px-2 font-semibold leading-8 text-green-800 group-hover:bg-red-400">
+              {option}
+            </span>
+            {isOptionInSelection(option) ? (
+              <CheckIcon
+                className="h-5 w-5 text-yellow-400"
+                aria-hidden="true"
+              />
+            ) : null}
+          </button>
+        </li>
+      ))}
+    </ul>
+  );
+
   return (
     <>
       {/* renders original cell/button */}
@@ -133,32 +162,7 @@ const DropdownCell = ({
                 onClickOutsideHandler={closeDropdown}
                 onScrollOutsideHandler={closeDropdown}
               >
-                <ul className="shadow-dropdown mt-[20px] w-full">
-                  {options.map((option, idx) => (
-                    <li className={`select-none list-none bg-white`} key={idx}>
-                      <button
-                        type="button"
-                        className={`
-                          justify-between, text-left, py-[20px],
-                          group flex
-                          w-full px-[15px]
-                          text-base hover:cursor-pointer hover:bg-gray-300 hover:font-bold
-                          `}
-                        onClick={() => handleOnOptionClick(option)}
-                      >
-                        <span className="text-s inline-flex select-none rounded-full bg-green-100 px-2 font-semibold leading-8 text-green-800 group-hover:bg-red-400">
-                          {option}
-                        </span>
-                        {isOptionInSelection(option) ? (
-                          <CheckIcon
-                            className="h-5 w-5 text-yellow-400"
-                            aria-hidden="true"
-                          />
-                        ) : null}
-                      </button>
-                    </li>
-                  ))}
-                </ul>
+                {renderDropdown()}
               </OutsideEventWrapper>
             </div>
           </div>
