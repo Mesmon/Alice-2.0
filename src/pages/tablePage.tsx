@@ -12,10 +12,32 @@ import { IMovie } from "../../@types";
 import { ReactQueryDevtools } from "react-query/devtools";
 import useMovies from "../hooks/data/useMovies";
 import useSaveMovie from "../hooks/data/useSaveMovie";
+import AnimatedModal from "../components/Modal/AnimatedModal";
+import { motion } from "framer-motion";
 
 const TablePage: NextPage = () => {
   const { isLoading, data, isError, error } = useMovies();
   const saveMovie = useSaveMovie();
+
+  const [modalOpen, setModalOpen] = useState(false);
+  const close = () => setModalOpen(false);
+  const open = () => setModalOpen(true);
+  const [children, setChildren] = useState(
+    <>
+      <p>Amazing</p>
+      <button onClick={close}>Really?</button>
+    </>
+  );
+  const makeModal = (row: Row<IMovie>) => {
+    const newChildren = (
+      <>
+        <h1>{row.original._id}</h1>
+        <p>{row.original.title}</p>
+      </>
+    );
+    setChildren(newChildren);
+    modalOpen ? close() : open();
+  };
 
   const [filteredColors, setFilteredColors] = useState<Array<string>>([]);
 
@@ -110,13 +132,26 @@ const TablePage: NextPage = () => {
         filteredColors={filteredColors}
         setFilteredColors={setFilteredColors}
       /> */}
+      <motion.button
+        whileHover={{ scale: 1.1 }}
+        whileTap={{ scale: 0.9 }}
+        className="bg-amber-600 text-slate-300"
+        onClick={() => (modalOpen ? close() : open())}
+      >
+        Launch Modal
+      </motion.button>
+      <AnimatedModal
+        modalOpen={modalOpen}
+        handleClose={close}
+        children={children}
+      />
       <Table
         columns={columns}
         data={data}
         updateMyData={updateMyData}
         header
         selectedColors={filteredColors}
-        rowOnClick={(row: Row<IMovie>) => console.log(row.original._id)}
+        rowOnClick={(row: Row<IMovie>) => makeModal(row)}
         ignoreRowOnClickColumns={["type"]}
         //   customFilter="eye_color"
       />
