@@ -1,7 +1,7 @@
 import { CheckIcon } from "@heroicons/react/solid";
 import React, { useCallback, useEffect, useState } from "react";
 import { usePopper } from "react-popper";
-import { Portal } from "./Portal";
+import { Portal } from "../Portal/Portal";
 import { useIsOpenDblClick } from "../../hooks/useMaxTwoCounter";
 import OutsideEventWrapper from "../OutsideEventWrapper/OutsideEventWrapper";
 import useInterval from "../../hooks/useInterval";

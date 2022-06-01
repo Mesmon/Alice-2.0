@@ -62,7 +62,7 @@ export default function Table({
               className={`sticky top-0
                 bg-gray-700 text-gray-100
                 pt-[14px] pb-[14px]
-                z-20 text-center
+                text-center
                 select-none
                 ${
                   column.isSorted
