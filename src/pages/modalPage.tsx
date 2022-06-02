@@ -15,6 +15,12 @@ const ModalPage: NextPage = () => {
     </>
   );
 
+  const modalClassname =
+    "m-auto flex h-[30vh] w-[50vw] flex-col items-center rounded-xl bg-orange-500 py-0 px-8";
+
+  const backdropClassname =
+    "bg-[#000000e1] absolute top-0 left-0 flex h-full w-full items-center justify-center";
+
   return (
     <div>
       <motion.button
@@ -45,6 +51,8 @@ const ModalPage: NextPage = () => {
         modalOpen={modalOpen}
         handleClose={close}
         children={children}
+        modalClassname={modalClassname}
+        backdropClassname={backdropClassname}
       />
     </div>
     // <div className={"bg-slate-700"}>
