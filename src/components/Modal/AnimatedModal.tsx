@@ -5,10 +5,18 @@ import Modal from "./Modal";
 interface Iprops {
   modalOpen: Boolean;
   handleClose: () => void;
+  modalClassname: string;
+  backdropClassname: string;
   children: React.ReactNode;
 }
 
-const AnimatedModal = ({ modalOpen, handleClose, children }: Iprops) => {
+const AnimatedModal = ({
+  modalOpen,
+  handleClose,
+  children,
+  modalClassname,
+  backdropClassname,
+}: Iprops) => {
   return (
     <AnimatePresence
       initial={false}
@@ -16,7 +24,14 @@ const AnimatedModal = ({ modalOpen, handleClose, children }: Iprops) => {
       onExitComplete={() => null}
     >
       <Portal>
-        {modalOpen && <Modal handleClose={handleClose} children={children} />}
+        {modalOpen && (
+          <Modal
+            handleClose={handleClose}
+            children={children}
+            modalClassname={modalClassname}
+            backdropClassname={backdropClassname}
+          />
+        )}
       </Portal>
     </AnimatePresence>
   );
