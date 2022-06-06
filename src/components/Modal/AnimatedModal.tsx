@@ -8,6 +8,15 @@ interface Iprops {
   modalClassname: string;
   backdropClassname: string;
   children: React.ReactNode;
+  popperData?: {
+    ref: React.Dispatch<React.SetStateAction<HTMLDivElement | null>>;
+    style: React.CSSProperties;
+    attributes:
+      | {
+          [key: string]: string;
+        }
+      | undefined;
+  };
 }
 
 const AnimatedModal = ({
@@ -16,6 +25,7 @@ const AnimatedModal = ({
   children,
   modalClassname,
   backdropClassname,
+  popperData,
 }: Iprops) => {
   return (
     <AnimatePresence
@@ -25,12 +35,15 @@ const AnimatedModal = ({
     >
       <Portal>
         {modalOpen && (
-          <Modal
-            handleClose={handleClose}
-            children={children}
-            modalClassname={modalClassname}
-            backdropClassname={backdropClassname}
-          />
+          <div>
+            <Modal
+              handleClose={handleClose}
+              children={children}
+              modalClassname={modalClassname}
+              backdropClassname={backdropClassname}
+              popperData={popperData}
+            />
+          </div>
         )}
       </Portal>
     </AnimatePresence>

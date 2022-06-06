@@ -1,16 +1,32 @@
 import { motion } from "framer-motion";
 
+interface Iprops {
+  children: React.ReactNode;
+  backdropClassname: string;
+  onClick: () => void;
+  popperData?: {
+    ref: React.Dispatch<React.SetStateAction<HTMLDivElement | null>>;
+    style: React.CSSProperties;
+    attributes:
+      | {
+          [key: string]: string;
+        }
+      | undefined;
+  };
+}
+
 const Backdrop = ({
   children,
   backdropClassname,
   onClick,
-}: {
-  children: React.ReactNode;
-  backdropClassname: string;
-  onClick: () => void;
-}) => {
+  popperData,
+}: Iprops) => {
   return (
     <motion.div
+      ref={popperData?.ref}
+      style={popperData?.style}
+      {...popperData?.attributes}
+      
       className={backdropClassname}
       onClick={onClick}
       initial={{ opacity: 0 }}
