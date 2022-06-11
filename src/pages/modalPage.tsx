@@ -1,9 +1,11 @@
 import type { NextPage } from "next";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import Modal from "../components/Modal/Modal";
 import AnimatedModal from "../components/Modal/AnimatedModal";
 import { usePopper } from "react-popper";
+import { Portal } from "../components/Portal/Portal";
+import DropdownModal from "../components/Dropdown/DropdownModal";
 const ModalPage: NextPage = () => {
   const [modalOpen, setModalOpen] = useState(false);
   const close = () => setModalOpen(false);
@@ -12,6 +14,18 @@ const ModalPage: NextPage = () => {
   const [modal2Open, setModal2Open] = useState(false);
   const close2 = () => setModal2Open(false);
   const open2 = () => setModal2Open(true);
+
+  useEffect(() => {
+    const escapeKeyPress = (e: { keyCode: number }) => {
+      if (e.keyCode == 27) {
+        close();
+      }
+    };
+    window.addEventListener("keydown", escapeKeyPress);
+    return () => {
+      window.removeEventListener("keydown", escapeKeyPress);
+    };
+  }, []);
 
   const children = (
     <>
@@ -24,7 +38,7 @@ const ModalPage: NextPage = () => {
     "m-auto flex h-[30vh] w-[50vw] flex-col items-center rounded-xl bg-orange-500 py-0 px-8";
 
   const backdropClassname =
-    "bg-[#000000e1] absolute top-0 left-0 flex h-full w-full items-center justify-center";
+    "bg-[#00000000] absolute top-0 left-0 h-full w-full grid justify-center content-center";
 
   const [popperElement, setPopperElement] = useState<HTMLDivElement | null>(
     null
@@ -45,40 +59,29 @@ const ModalPage: NextPage = () => {
 
   return (
     <div>
-      <div ref={setReferenceElement} className="max-w-fit absolute left-96 top-96">
+      <div
+        ref={setReferenceElement}
+        className="absolute left-[70vw] top-40 max-w-fit"
+      >
         <motion.button
           whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 0.9 }}
-          className="bg-amber-600 text-slate-300"
+          className=" bg-amber-600 text-slate-300"
           onClick={() => (modalOpen ? close() : open())}
         >
           Launch Modal
         </motion.button>
       </div>
 
-      <motion.button
-        whileHover={{ scale: 1.1 }}
-        whileTap={{ scale: 0.9 }}
-        className="bg-amber-600 text-slate-300"
-        onClick={() => (modal2Open ? close2() : open2())}
-      >
-        BIGUS DIGUS
-      </motion.button>
-      <AnimatedModal
+      <DropdownModal
         modalOpen={modalOpen}
         handleClose={close}
-        children={children}
         modalClassname={modalClassname}
         backdropClassname={backdropClassname}
         popperData={popperData}
-      />
-        <AnimatedModal
-        modalOpen={modal2Open}
-        handleClose={close2}
-        children={children}
-        modalClassname={modalClassname}
-        backdropClassname={backdropClassname}
-      />
+      >
+        {children}
+      </DropdownModal>
     </div>
   );
 };

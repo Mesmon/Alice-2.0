@@ -12,14 +12,14 @@ const dropIn = {
     y: "0vh",
     opacity: 1,
     transition: {
-      duration: 0.1,
+      duration: 0.05,
       type: "spring",
       damping: 25,
       stiffness: 500,
     },
   },
   exit: {
-    y: "100vh",
+    y: "-100vh",
     opacity: 0,
   },
 };
@@ -29,30 +29,16 @@ interface Iprops {
   children: React.ReactNode;
   modalClassname: string;
   backdropClassname: string;
-  popperData?: {
-    ref: React.Dispatch<React.SetStateAction<HTMLDivElement | null>>;
-    style: React.CSSProperties;
-    attributes:
-      | {
-          [key: string]: string;
-        }
-      | undefined;
-  };
 }
 const Modal = ({
   handleClose,
   children,
   modalClassname,
   backdropClassname,
-  popperData,
 }: Iprops) => {
   return (
-    <Backdrop onClick={handleClose} backdropClassname={backdropClassname} popperData={popperData}>
+    <Backdrop onClick={handleClose} backdropClassname={backdropClassname}>
       <motion.div
-        ref={popperData?.ref}
-        style={popperData?.style}
-        {...popperData?.attributes}
-
         onClick={(e) => e.stopPropagation()}
         className={modalClassname}
         variants={dropIn}
