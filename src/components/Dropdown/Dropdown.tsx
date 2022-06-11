@@ -6,6 +6,7 @@ import { useIsOpenDblClick } from "../../hooks/useMaxTwoCounter";
 import OutsideEventWrapper from "../OutsideEventWrapper/OutsideEventWrapper";
 import useInterval from "../../hooks/useInterval";
 import IDropdownProps from "../../../@types/IDropdownProps";
+import DropdownModal from "./DropdownModal";
 
 const DropdownCell = ({
   value,
@@ -109,6 +110,19 @@ const DropdownCell = ({
     </ul>
   );
 
+  const modalClassname =
+    "m-auto flex h-[30vh] w-[50vw] flex-col items-center rounded-xl bg-orange-500 py-0 px-8";
+
+  const backdropClassname =
+    "bg-[#00000000] absolute top-0 left-0 h-full w-full grid justify-center content-center";
+
+
+  const popperData = {
+    ref: setPopperElement,
+    style: styles.popper,
+    attributes: attributes.popper,
+  };
+
   return (
     <>
       {/* renders original cell/button */}
@@ -148,7 +162,16 @@ const DropdownCell = ({
         </span>
       </div>
 
-      {isOpen && (
+      <DropdownModal
+        modalOpen={isOpen}
+        handleClose={closeDropdown}
+        // modalClassname={modalClassname}
+        backdropClassname={backdropClassname}
+        popperData={popperData}
+      >
+        {renderDropdown()}
+      </DropdownModal>
+      {/* {isOpen && (
         //   render dropdown
         <Portal>
           <div
@@ -167,7 +190,7 @@ const DropdownCell = ({
             </div>
           </div>
         </Portal>
-      )}
+      )} */}
     </>
   );
 };

@@ -22,12 +22,31 @@ const TablePage: NextPage = () => {
   const [modalOpen, setModalOpen] = useState(false);
   const close = () => setModalOpen(false);
   const open = () => setModalOpen(true);
+
   const [children, setChildren] = useState(
     <>
-      <p>Amazing</p>
-      <button onClick={close}>Really?</button>
+      <h1>ERROR</h1>
     </>
   );
+
+  useEffect(() => {
+    const escapeKeyPress = (e: { keyCode: number }) => {
+      if (e.keyCode == 27) {
+        close();
+      }
+    };
+    window.addEventListener("keydown", escapeKeyPress);
+    return () => {
+      window.removeEventListener("keydown", escapeKeyPress);
+    };
+  }, []);
+
+  const modalClassname =
+    "m-auto flex h-[30vh] w-[50vw] flex-col items-center rounded-xl bg-orange-500 py-0 px-8";
+
+  const backdropClassname =
+    "bg-[#000000e1] absolute top-0 left-0 flex h-full w-full items-center justify-center";
+
   const makeModal = (row: Row<IMovie>) => {
     const newChildren = (
       <>
@@ -135,7 +154,8 @@ const TablePage: NextPage = () => {
       <motion.button
         whileHover={{ scale: 1.1 }}
         whileTap={{ scale: 0.9 }}
-        className="bg-amber-600 text-slate-300"
+        className="bg-amber-600 text-slate-300
+        "
         onClick={() => (modalOpen ? close() : open())}
       >
         Launch Modal
@@ -144,6 +164,8 @@ const TablePage: NextPage = () => {
         modalOpen={modalOpen}
         handleClose={close}
         children={children}
+        modalClassname={modalClassname}
+        backdropClassname={backdropClassname}
       />
       <Table
         columns={columns}

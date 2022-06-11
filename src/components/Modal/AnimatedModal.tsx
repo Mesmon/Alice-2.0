@@ -1,4 +1,5 @@
 import { AnimatePresence } from "framer-motion";
+import DropdownModal from "../Dropdown/DropdownModal";
 import { Portal } from "../Portal/Portal";
 import Modal from "./Modal";
 
@@ -8,15 +9,6 @@ interface Iprops {
   modalClassname: string;
   backdropClassname: string;
   children: React.ReactNode;
-  popperData?: {
-    ref: React.Dispatch<React.SetStateAction<HTMLDivElement | null>>;
-    style: React.CSSProperties;
-    attributes:
-      | {
-          [key: string]: string;
-        }
-      | undefined;
-  };
 }
 
 const AnimatedModal = ({
@@ -25,7 +17,6 @@ const AnimatedModal = ({
   children,
   modalClassname,
   backdropClassname,
-  popperData,
 }: Iprops) => {
   return (
     <AnimatePresence
@@ -33,19 +24,16 @@ const AnimatedModal = ({
       exitBeforeEnter={true}
       onExitComplete={() => null}
     >
-      <Portal>
-        {modalOpen && (
-          <div>
-            <Modal
-              handleClose={handleClose}
-              children={children}
-              modalClassname={modalClassname}
-              backdropClassname={backdropClassname}
-              popperData={popperData}
-            />
-          </div>
-        )}
-      </Portal>
+      {modalOpen && (
+        <Portal>
+          <Modal
+            handleClose={handleClose}
+            children={children}
+            modalClassname={modalClassname}
+            backdropClassname={backdropClassname}
+          />
+        </Portal>
+      )}
     </AnimatePresence>
   );
 };
