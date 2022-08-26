@@ -1,72 +1,63 @@
-import * as utilities from "./Helpers"
-import { SubmitHandler, useForm } from "react-hook-form"
+import { DateTime } from "luxon";
+import { useReducer } from "react";
+import DateInputText from "./DateInputText";
 
-type FormValues = {
-  day: number
-  month: number
-  year: number
+interface IProps {
+  initDay?: TDateInput;
+  initMonth?: TDateInput;
+  initYear?: TDateInput;
 }
+type TDateInput = number | undefined;
 
-function DatePicker() {
-  const todayDate = new Date()
-  const today = {
-    day: todayDate.getDate(),
-    month: todayDate.getMonth() + 1,
-    year: todayDate.getFullYear(),
+const initializeDate = ({ initDay, initMonth, initYear }: IProps) => {
+  const today = DateTime.now();
+  const day = initDay ?? today.day;
+  const month = initMonth ?? today.month;
+  const year = initYear ?? today.year;
+
+  return DateTime.fromObject({ day: day, month: month, year: year });
+};
+
+const reducer = (state: DateTime, action: { value: number; type: string }) => {
+  switch (action.type) {
+    case "updateDay":
+      return DateTime.fromObject({
+        ...state.toObject(),
+        day: action.value,
+      });
+    case "updateMonth":
+      return DateTime.fromObject({
+        ...state.toObject(),
+        month: action.value,
+      });
+    case "updateYear":
+      return DateTime.fromObject({
+        ...state.toObject(),
+        year: action.value,
+      });
+
+    case "today":
+      return initializeDate({
+        initDay: undefined,
+        initMonth: undefined,
+        initYear: undefined,
+      });
+    default:
+      throw new Error();
   }
-
-  const daysInMonth = (month: number, year: number) => {
-    return new Date(year, month, 0).getDate()
-  }
-
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<FormValues>({
-    defaultValues: {
-      day: today.day,
-      month: today.month,
-      year: today.year,
+};
+const DatePicker = ({ initDay, initMonth, initYear }: IProps) => {
+  const [date, updateDate] = useReducer(
+    reducer,
+    {
+      initDay: initDay,
+      initMonth: initMonth,
+      initYear: initYear,
     },
-  })
-  const onSubmit = (data: FormValues) => {
-    alert(JSON.stringify(data))
-    // alert(errors)
-  }
+    initializeDate
+  );
 
-  return (
-    <div>
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <input
-          type="number"
-          autoComplete="off"
-          inputMode="numeric"
-          {...register("day", {
-            required: "day is required!",
-            min: 1,
-            max: daysInMonth(today.month, today.year),
-          })}
-        />
-        {errors.day && <p>{errors.day.message}</p>}
+  return <DateInputText date={date} updateDate={updateDate} />;
+};
 
-        <input
-          type="number"
-          autoComplete="off"
-          inputMode="numeric"
-          {...register("month")}
-        />
-        <input
-          type="number"
-          autoComplete="off"
-          inputMode="numeric"
-          {...register("year")}
-        />
-
-        <input type="submit" />
-      </form>
-    </div>
-  )
-}
-
-export default DatePicker
+export default DatePicker;
