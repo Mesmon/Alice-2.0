@@ -10,7 +10,7 @@ interface Iprops {
   placeHolder?: string | number;
 }
 
-function NumberInput({
+const NumberInput = ({
   numberValue,
   setNumberValue,
   maxValue,
@@ -18,7 +18,7 @@ function NumberInput({
   name,
   visualLength,
   placeHolder,
-}: Iprops) {
+}: Iprops) => {
   const width = visualLength ? `w-${visualLength * 2}` : "w-4";
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -47,9 +47,8 @@ function NumberInput({
     let numberToDisplay = numberValue.toString();
     if (visualLength) {
       let numberString = numberValue.toString();
-      while (numberString.length < visualLength) {
-        numberString = "0" + numberString;
-      }
+      numberString =
+        "0".repeat(visualLength - numberString.length) + numberString;
       numberToDisplay = numberString;
     }
     return numberToDisplay;
@@ -58,7 +57,7 @@ function NumberInput({
   return (
     <input
       name={name}
-      className={`appearance-none outline-none" ${width}`}
+      className={`outline-none" appearance-none ${width}`}
       type="number"
       min={minValue}
       max={maxValue}
@@ -69,6 +68,6 @@ function NumberInput({
       placeholder={placeHolder?.toString()}
     />
   );
-}
+};
 
 export default NumberInput;

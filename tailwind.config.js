@@ -1,8 +1,7 @@
 const plugin = require("tailwindcss/plugin");
-
 module.exports = {
   content: [
-    "./pages/**/*.{js,ts,jsx,tsx}",
+    "./src/pages/**/*.{js,ts,jsx,tsx}",
     "./src/components/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
@@ -28,6 +27,9 @@ module.exports = {
         bottom: "inset 0 -5px 0 0 rgba(256, 256, 256, 0.8)",
         datePicker: "10px 10px 40px rgba(0,0,0,0.2)",
         dropdown: "0 .125rem .25rem rgba(0,0,0,.075)",
+      },
+      cursor: {
+        fancy: "url(../public/alice.cur), pointer",
       },
     },
   },

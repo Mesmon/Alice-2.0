@@ -61,8 +61,8 @@ export default function Table({
             <th
               className={`sticky top-0
                 bg-gray-700 text-gray-100
-                py-[14px]
-                z-20 text-center
+                pt-[14px] pb-[14px]
+                text-center
                 select-none
                 ${
                   column.isSorted
@@ -105,7 +105,7 @@ export default function Table({
                   {row.cells.map((cell) => {
                     return (
                       <td
-                        className="text-center p-4 select-none"
+                        className="text-center border-2 select-none"
                         {...cell.getCellProps()}
                         onClick={
                           rowOnClick &&
