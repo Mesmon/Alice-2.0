@@ -4,7 +4,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import Modal from "../components/Modal/Modal";
 import AnimatedModal from "../components/Modal/AnimatedModal";
 import { usePopper } from "react-popper";
-import { Portal } from "../components/Portal/Portal";
+
 import DropdownModal from "../components/Dropdown/DropdownModal";
 const ModalPage: NextPage = () => {
   const [modalOpen, setModalOpen] = useState(false);
