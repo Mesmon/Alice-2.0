@@ -57,14 +57,22 @@ const DateInputText = ({ date, updateDate }: IProps) => {
   const keyDownHandler = (event: React.KeyboardEvent<HTMLDivElement>) => {
     console.log(event.code);
     if (event.code === "ArrowLeft") {
-      event.preventDefault()
+      event.preventDefault();
       manageSelectionIndex("sub");
     }
     if (event.code === "ArrowRight") {
-      event.preventDefault()
+      event.preventDefault();
       manageSelectionIndex("add");
     }
-    if (event.code === "Tab") event.preventDefault();
+    if (event.code === "Tab") {
+      event.preventDefault();
+      manageSelectionIndex("add");
+    }
+
+    if (event.shiftKey && event.code === "Tab") {
+      event.preventDefault();
+      manageSelectionIndex("sub");
+    }
   };
 
   return (
@@ -75,6 +83,7 @@ const DateInputText = ({ date, updateDate }: IProps) => {
         className="outline-none ring-2 selection:bg-red-300"
         onKeyDown={keyDownHandler}
         value={date.toFormat("dd/MM/yyyy")}
+        onChange={() => {}}
       />
       <input
         type="number"
