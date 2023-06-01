@@ -1,6 +1,6 @@
 import { useQuery } from "react-query";
 import axios from "axios";
-import { IMovie } from "../../../@types";
+import { IMovie } from "../../@types";
 
 const fetchMovies = () => {
   return axios

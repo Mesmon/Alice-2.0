@@ -1,11 +1,12 @@
-import type { NextPage } from "next";
-import { useEffect, useState } from "react";
-import { AnimatePresence, motion } from "framer-motion";
-import Modal from "../components/Modal/Modal";
-import AnimatedModal from "../components/Modal/AnimatedModal";
-import { usePopper } from "react-popper";
+import type { NextPage } from 'next';
+import { useEffect, useState } from 'react';
+import { AnimatePresence, motion } from 'framer-motion';
+import { usePopper } from 'react-popper';
+import Modal from '../components/Modal/Modal';
+import AnimatedModal from '../components/Modal/AnimatedModal';
 
-import DropdownModal from "../components/Dropdown/DropdownModal";
+import DropdownModal from '../components/Dropdown/DropdownModal';
+
 const ModalPage: NextPage = () => {
   const [modalOpen, setModalOpen] = useState(false);
   const close = () => setModalOpen(false);
@@ -21,9 +22,9 @@ const ModalPage: NextPage = () => {
         close();
       }
     };
-    window.addEventListener("keydown", escapeKeyPress);
+    window.addEventListener('keydown', escapeKeyPress);
     return () => {
-      window.removeEventListener("keydown", escapeKeyPress);
+      window.removeEventListener('keydown', escapeKeyPress);
     };
   }, []);
 
@@ -34,21 +35,18 @@ const ModalPage: NextPage = () => {
     </>
   );
 
-  const modalClassname =
-    "m-auto flex h-[30vh] w-[50vw] flex-col items-center rounded-xl bg-orange-500 py-0 px-8";
+  const modalClassname = 'm-auto flex h-[30vh] w-[50vw] flex-col items-center rounded-xl bg-orange-500 py-0 px-8';
 
-  const backdropClassname =
-    "bg-[#00000000] absolute top-0 left-0 h-full w-full grid justify-center content-center";
+  const backdropClassname = 'bg-[#00000000] absolute top-0 left-0 h-full w-full grid justify-center content-center';
 
   const [popperElement, setPopperElement] = useState<HTMLDivElement | null>(
-    null
+    null,
   );
 
-  const [referenceElement, setReferenceElement] =
-    useState<HTMLDivElement | null>(null);
+  const [referenceElement, setReferenceElement] = useState<HTMLDivElement | null>(null);
 
   const { styles, attributes } = usePopper(referenceElement, popperElement, {
-    placement: "bottom",
+    placement: 'bottom',
   });
 
   const popperData = {

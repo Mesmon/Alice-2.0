@@ -1,6 +1,6 @@
-import { DateTime } from "luxon";
-import { useReducer } from "react";
-import DateInputText from "./DateInputText";
+import { DateTime } from 'luxon';
+import { useReducer } from 'react';
+import DateInputText from './DateInputText';
 
 interface IProps {
   initDay?: TDateInput;
@@ -15,28 +15,28 @@ const initializeDate = ({ initDay, initMonth, initYear }: IProps) => {
   const month = initMonth ?? today.month;
   const year = initYear ?? today.year;
 
-  return DateTime.fromObject({ day: day, month: month, year: year });
+  return DateTime.fromObject({ day, month, year });
 };
 
 const reducer = (state: DateTime, action: { value: number; type: string }) => {
   switch (action.type) {
-    case "updateDay":
+    case 'updateDay':
       return DateTime.fromObject({
         ...state.toObject(),
         day: action.value,
       });
-    case "updateMonth":
+    case 'updateMonth':
       return DateTime.fromObject({
         ...state.toObject(),
         month: action.value,
       });
-    case "updateYear":
+    case 'updateYear':
       return DateTime.fromObject({
         ...state.toObject(),
         year: action.value,
       });
 
-    case "today":
+    case 'today':
       return initializeDate({
         initDay: undefined,
         initMonth: undefined,
@@ -50,11 +50,11 @@ const DatePicker = ({ initDay, initMonth, initYear }: IProps) => {
   const [date, updateDate] = useReducer(
     reducer,
     {
-      initDay: initDay,
-      initMonth: initMonth,
-      initYear: initYear,
+      initDay,
+      initMonth,
+      initYear,
     },
-    initializeDate
+    initializeDate,
   );
 
   return <DateInputText date={date} updateDate={updateDate} />;

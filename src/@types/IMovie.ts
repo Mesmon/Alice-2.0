@@ -3,7 +3,7 @@ export default interface IMovie {
   title: string;
   runtime: number;
   released: Date;
-  rating: number;
-  votes: number;
+  imdb: { rating: number, votes: number; };
+
   type: string;
 }

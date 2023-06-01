@@ -1,7 +1,7 @@
-import { AnimatePresence } from "framer-motion";
-import DropdownModal from "../Dropdown/DropdownModal";
-import { Portal } from "../Portal/Portal";
-import Modal from "./Modal";
+import { AnimatePresence } from 'framer-motion';
+import DropdownModal from '../Dropdown/DropdownModal';
+import { Portal } from '../Portal/Portal';
+import Modal from './Modal';
 
 interface Iprops {
   modalOpen: Boolean;
@@ -17,8 +17,7 @@ const AnimatedModal = ({
   children,
   modalClassname,
   backdropClassname,
-}: Iprops) => {
-  return (
+}: Iprops) => (
     <AnimatePresence
       initial={false}
       exitBeforeEnter={true}
@@ -35,7 +34,6 @@ const AnimatedModal = ({
         </Portal>
       )}
     </AnimatePresence>
-  );
-};
+);
 
 export default AnimatedModal;

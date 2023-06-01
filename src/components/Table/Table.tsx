@@ -1,80 +1,106 @@
-/* eslint-disable */
-import { useEffect, useMemo } from "react";
-import { useTable, useSortBy, useGlobalFilter, useFilters } from "react-table";
-import { ITableProps } from "../../../@types";
-import GlobalTableFilter from "./GlobalTableFilter/GlobalTableFilter";
+import { useState } from 'react';
+import {
+  useReactTable,
+  flexRender,
+  getCoreRowModel,
+  getSortedRowModel,
+  SortingState,
+  Column,
+  FilterFn,
+  getFilteredRowModel,
+} from '@tanstack/react-table';
+import { rankItem } from '@tanstack/match-sorter-utils';
+import { ITableProps } from '../../@types';
+import GlobalTableFilter from './GlobalTableFilter/GlobalTableFilter';
 
 export default function Table({
   columns,
   data,
   updateMyData,
-  header = null,
-  selectedColors,
-  customFilter,
+  isHeader = null,
+  // selectedColors,
+  // customFilter,
   rowOnClick,
   ignoreRowOnClickColumns,
 }: ITableProps) {
-  // Use the state and functions returned from useTable to build your UI
+  const [sorting, setSorting] = useState<SortingState>([]);
+  const [globalFilter, setGlobalFilter] = useState('');
 
-  const {
-    getTableProps,
-    getTableBodyProps,
-    headerGroups,
-    prepareRow,
-    rows,
-    state,
-    setFilter,
-    setGlobalFilter,
-  } = useTable(
-    {
-      columns,
-      data,
-      updateMyData,
-      initialState: {
-        sortBy: [
-          {
-            id: "title",
-            desc: false,
-          },
-        ],
-      },
-      autoResetSortBy: false,
-      autoResetFilters: false,
+  const fuzzyFilter: FilterFn<any> = (row, columnId, value, addMeta) => {
+    // Rank the item
+    const itemRank = rankItem(row.getValue(columnId), value);
+
+    // Store the itemRank info
+    addMeta({
+      itemRank,
+    });
+
+    // Return if the item should be filtered in/out
+    return itemRank.passed;
+  };
+
+  const table = useReactTable({
+    data,
+    columns,
+    state: { sorting, globalFilter },
+    meta: {
+      updateData: updateMyData,
     },
-    useFilters, // useFilters!
-    useGlobalFilter, // useGlobalFilter!
-    useSortBy
-  );
+    onSortingChange: setSorting,
+    getCoreRowModel: getCoreRowModel(),
+    getSortedRowModel: getSortedRowModel(),
+    getFilteredRowModel: getFilteredRowModel(),
+    onGlobalFilterChange: setGlobalFilter,
+    globalFilterFn: fuzzyFilter,
+    debugTable: true,
+  });
 
-  useEffect(() => {
-    // This will now use our custom filter for selectedColors
-    customFilter && setFilter(customFilter, selectedColors);
-  }, [selectedColors]);
+  const addSortIndicator = (column: Column<any, any>) => {
+    if (column.getCanSort()) {
+      if (column.getIsSorted() as string === 'desc') return 'shadow-bottom';
+      if (column.getIsSorted() as string === 'asc') return 'shadow-top';
+    }
+    return '';
+  };
 
-  const { globalFilter } = state;
+  const renderGlobalFilter = () => {
+    if (isHeader) {
+      return (
+        <GlobalTableFilter
+          globalFilter={globalFilter} setGlobalFilter={setGlobalFilter}
+        />);
+    }
+  };
 
   const renderHeader = () => (
     <thead>
-      {headerGroups.map((headerGroup) => (
-        <tr {...headerGroup.getHeaderGroupProps()}>
-          {headerGroup.headers.map((column) => (
-            <th
-              className={`sticky top-0
-                bg-gray-700 text-gray-100
-                pt-[14px] pb-[14px]
-                text-center
-                select-none
-                ${
-                  column.isSorted
-                    ? column.isSortedDesc
-                      ? "shadow-bottom"
-                      : "shadow-top"
-                    : ""
-                }
-              `}
-              {...column.getHeaderProps(column.getSortByToggleProps())}
-            >
-              {column.render("Header")}
+      {table.getHeaderGroups().map((headerGroup) => (
+        <tr key={headerGroup.id}>
+          {headerGroup.headers.map((header) => (
+            <th key={header.id} colSpan={header.colSpan}>
+              {header.isPlaceholder ? null : (
+                <div
+                  {...{
+                    className:
+                      `sticky top-0
+                      select-none bg-gray-700
+                      pt-[14px] pb-[14px]
+                      text-center
+                      text-gray-100
+                    ${addSortIndicator(header.column)}
+                    ${header.column.getCanSort()
+                        ? 'cursor-pointer select-none'
+                        : ''},
+                  `,
+                    onClick: header.column.getToggleSortingHandler(),
+                  }}
+                >
+                  {flexRender(
+                    header.column.columnDef.header,
+                    header.getContext(),
+                  )}
+                </div>
+              )}
             </th>
           ))}
         </tr>
@@ -84,43 +110,40 @@ export default function Table({
 
   return (
     <>
-      <p>row amount: {rows.length}</p>
-      {header && (
-        <GlobalTableFilter filter={globalFilter} setFilter={setGlobalFilter} />
-      )}
+      <p>row amount: {table.getRowModel().rows.length}</p>
+      {renderGlobalFilter()}
 
-      <div className="w-11/12 m-auto max-h-[70vh] overflow-auto overflow-y-scroll rounded-t-3xl rounded-b-xl no-scrollbar border-b-4 border-gray-400">
-        <table className={`w-full`} {...getTableProps()}>
-          {/* border-separate border-spacing-4 //fistun*/}
+      <div className="no-scrollbar m-auto max-h-[70vh] w-11/12 overflow-auto overflow-y-scroll rounded-t-3xl rounded-b-xl border-b-4 border-gray-400">
+        <table className={'w-full'}>
           {renderHeader()}
-          <tbody {...getTableBodyProps()}>
-            {rows.map((row, i) => {
-              prepareRow(row);
-              return (
-                <tr
-                  // className=" hover:bg-gray-300 hover:text-indigo-700 hover:cursor-pointer odd:bg-gray-50 even:bg-gray-200 odd:rotate-2 even:-rotate-2 //fistun"
-                  className=" hover:bg-gray-300 hover:text-indigo-700 hover:cursor-pointer odd:bg-gray-50 even:bg-gray-200"
-                  {...row.getRowProps()}
-                >
-                  {row.cells.map((cell) => {
-                    return (
-                      <td
-                        className="text-center border-2 select-none"
-                        {...cell.getCellProps()}
-                        onClick={
-                          rowOnClick &&
-                          (() =>
-                            ignoreRowOnClickColumns?.includes(cell.column.id) ||
-                            rowOnClick(row))
-                        }
-                      >
-                        {cell.render("Cell")}
-                      </td>
-                    );
-                  })}
-                </tr>
-              );
-            })}
+          <tbody>
+            {table.getRowModel().rows.map((row) => (
+              <tr
+                key={row.id}
+                // className=" hover:bg-gray-300 hover:text-indigo-700 hover:cursor-pointer
+                // odd:bg-gray-50 even:bg-gray-200 odd:rotate-2 even:-rotate-2 //fistun"
+                className=" odd:bg-gray-50 even:bg-gray-200
+                hover:cursor-pointer hover:bg-gray-300 hover:text-indigo-700"
+              >
+                {row.getVisibleCells().map((cell) => (
+                  <td
+                    key={cell.id}
+                    className="select-none border-2 text-center"
+                    onClick={() => {
+                      if (rowOnClick) {
+                        if (!ignoreRowOnClickColumns?.includes(cell.column.id)) { rowOnClick(row); }
+                      }
+                    }
+                    }
+                  >
+                    {flexRender(
+                      cell.column.columnDef.cell,
+                      cell.getContext(),
+                    )}
+                  </td>
+                ))}
+              </tr>
+            ))}
           </tbody>
         </table>
       </div>

@@ -1,22 +1,27 @@
-import React, { useEffect, useMemo } from "react";
-import { useState } from "react";
-import Table from "../components/Table/Table";
+/* eslint-disable */
+
+import React, { useEffect, useMemo, useState } from 'react';
+import { ColumnDef, Row, createColumnHelper } from '@tanstack/react-table';
+import { DateTime } from 'luxon';
+import { NextPage } from 'next';
+import { ReactQueryDevtools } from 'react-query/devtools';
+import { motion } from 'framer-motion';
+import { create } from 'domain';
+import Table from '../components/Table/Table';
 import ColumnFilter, {
   customFilterFunction,
-} from "../components/Table/ColumnFilter/ColumnFilter";
-import { Row } from "react-table";
-import DropdownCell from "../components/Dropdown/Dropdown";
-import { DateTime } from "luxon";
-import { NextPage } from "next";
-import { IMovie } from "../../@types";
-import { ReactQueryDevtools } from "react-query/devtools";
-import useMovies from "../hooks/data/useMovies";
-import useSaveMovie from "../hooks/data/useSaveMovie";
-import AnimatedModal from "../components/Modal/AnimatedModal";
-import { motion } from "framer-motion";
+} from '../components/Table/ColumnFilter/ColumnFilter';
+import DropdownCell from '../components/Dropdown/Dropdown';
+import { IMovie } from '../@types';
+import useMovies from '../hooks/data/useMovies';
+import useSaveMovie from '../hooks/data/useSaveMovie';
+import AnimatedModal from '../components/Modal/AnimatedModal';
+import Link from 'next/link';
 
 const TablePage: NextPage = () => {
-  const { isLoading, data, isError, error } = useMovies();
+  const {
+    isLoading, data, isError, error,
+  } = useMovies();
   const saveMovie = useSaveMovie();
 
   const [modalOpen, setModalOpen] = useState(false);
@@ -26,26 +31,24 @@ const TablePage: NextPage = () => {
   const [children, setChildren] = useState(
     <>
       <h1>ERROR</h1>
-    </>
+    </>,
   );
 
   useEffect(() => {
     const escapeKeyPress = (e: { keyCode: number }) => {
-      if (e.keyCode == 27) {
+      if (e.keyCode === 27) {
         close();
       }
     };
-    window.addEventListener("keydown", escapeKeyPress);
+    window.addEventListener('keydown', escapeKeyPress);
     return () => {
-      window.removeEventListener("keydown", escapeKeyPress);
+      window.removeEventListener('keydown', escapeKeyPress);
     };
   }, []);
 
-  const modalClassname =
-    "m-auto flex h-[30vh] w-[50vw] flex-col items-center rounded-xl bg-orange-500 py-0 px-8";
+  const modalClassname = 'm-auto flex h-[30vh] w-[50vw] flex-col items-center rounded-xl bg-orange-500 py-0 px-8';
 
-  const backdropClassname =
-    "bg-[#000000e1] absolute top-0 left-0 flex h-full w-full items-center justify-center";
+  const backdropClassname = 'bg-[#000000e1] absolute top-0 left-0 flex h-full w-full items-center justify-center';
 
   const makeModal = (row: Row<IMovie>) => {
     const newChildren = (
@@ -60,82 +63,42 @@ const TablePage: NextPage = () => {
 
   const [filteredColors, setFilteredColors] = useState<Array<string>>([]);
 
-  const columns = useMemo(
-    () => [
-      {
-        Header: "ID",
-        accessor: "_id",
-      },
-      {
-        Header: "Type",
-        accessor: "type",
-        Cell: function RenderDropDownCell({
-          value,
-          row,
-        }: {
-          value: string;
-          row: Row<IMovie>;
-        }) {
-          return (
-            <DropdownCell
-              value={value}
-              options={items}
-              dataId={row.original._id}
-              updateMyData={updateMyData}
-            />
-          );
-        },
-      },
-      {
-        Header: "Title",
-        accessor: "title",
-      },
+  const columnHelper = createColumnHelper<IMovie>();
 
-      {
-        Header: "Runtime",
-        accessor: "runtime",
+  const columns = [
+    columnHelper.accessor('_id', { header: 'ID', cell: info => info.getValue() }),
+    columnHelper.accessor('type', {
+      header: 'Type', cell: info => {
+        return <DropdownCell
+          value={info.getValue()}
+          options={items}
+          dataId={info.row.original._id}
+          updateMyData={updateMyData}
+        />
       },
-      //   {
-      //     Header: "Eye Color",
-      //     accessor: "eye_color",
-      //     filter: customFilterFunction,
-      //   },
-      {
-        Header: "Release Date",
-        accessor: "released",
-        Cell: ({ value }: { value: string }) => {
-          return value
-            ? DateTime.fromISO(value).toFormat("dd/MM/yyyy")
-            : "No known Release Date :(";
-        },
-      },
-      {
-        Header: "Rating",
-        accessor: "imdb.rating",
-      },
-      {
-        Header: "Votes",
-        accessor: "imdb.votes",
-      },
-    ],
-    []
-  );
+    }),
+    columnHelper.accessor('title', { header: 'Title', cell: info => info.getValue() }),
+    columnHelper.accessor('runtime', { header: 'Runtime', cell: info => info.getValue() }),
+    columnHelper.accessor('released', {
+      header: 'Release Date', cell: info => {
+        return info.getValue()
+          ?
+          DateTime.fromJSDate(new Date(info.getValue())).toFormat("dd/MM/yyyy")
+          :
+          "No known Release Date :("
+      }
+    }),
+    columnHelper.accessor('imdb.rating', { header: 'Rating', cell: info => info.getValue() }),
+    columnHelper.accessor('imdb.votes', { header: 'Votes', cell: info => info.getValue() }),
+  ];
 
   const updateMyData = (dataId: string | number, values: Partial<IMovie>) => {
-    saveMovie.mutate({ id: dataId, values: values });
+    saveMovie.mutate({ id: dataId, values });
   };
 
   const [selectedDate, setSelectedDate] = useState(new Date());
 
-  const items = ["bruh", "moment", "occurred"];
-  const [date, setDate] = useState(new Date(2021, 9, 12));
-
-  const onChange = (event: any) => {
-    const value = event?.target?.value;
-    console.log(value);
-
-    // setDate()
-  };
+  const items = ['bruh', 'moment', 'occurred'];
 
   if (isError) {
     return <h2>{error?.message}</h2>;
@@ -146,7 +109,7 @@ const TablePage: NextPage = () => {
   }
 
   return (
-    <div className="w-full">
+    <div className="w-full bg-slate-200 dark:bg-slate-900">
       {/* <ColumnFilter
         filteredColors={filteredColors}
         setFilteredColors={setFilteredColors}
@@ -171,11 +134,10 @@ const TablePage: NextPage = () => {
         columns={columns}
         data={data}
         updateMyData={updateMyData}
-        header
-        selectedColors={filteredColors}
+        isHeader
+      // selectedColors={filteredColors}
         rowOnClick={(row: Row<IMovie>) => makeModal(row)}
-        ignoreRowOnClickColumns={["type"]}
-        //   customFilter="eye_color"
+        ignoreRowOnClickColumns={['type']}  
       />
       <ReactQueryDevtools />
     </div>

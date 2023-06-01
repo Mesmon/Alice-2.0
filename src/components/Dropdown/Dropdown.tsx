@@ -1,12 +1,12 @@
-import { CheckIcon } from "@heroicons/react/solid";
-import React, { useCallback, useEffect, useState } from "react";
-import { usePopper } from "react-popper";
-import { Portal } from "../Portal/Portal";
-import { useIsOpenDblClick } from "../../hooks/useMaxTwoCounter";
-import OutsideEventWrapper from "../OutsideEventWrapper/OutsideEventWrapper";
-import useInterval from "../../hooks/useInterval";
-import IDropdownProps from "../../../@types/IDropdownProps";
-import DropdownModal from "./DropdownModal";
+import { CheckIcon } from '@heroicons/react/solid';
+import React, { useCallback, useEffect, useState } from 'react';
+import { usePopper } from 'react-popper';
+import { Portal } from '../Portal/Portal';
+import { useIsOpenDblClick } from '../../hooks/useMaxTwoCounter';
+import OutsideEventWrapper from '../OutsideEventWrapper/OutsideEventWrapper';
+import useInterval from '../../hooks/useInterval';
+import IDropdownProps from '../../@types/IDropdownProps';
+import DropdownModal from './DropdownModal';
 
 const DropdownCell = ({
   value,
@@ -17,11 +17,13 @@ const DropdownCell = ({
   allowEmpty = false,
 }: IDropdownProps) => {
   const [selection, setSelection] = useState<Array<string>>([value]);
-  const { isOpen, setIsOpen, incCount, isHalfOpen } = useIsOpenDblClick();
+  const {
+    isOpen, setIsOpen, incCount, isHalfOpen,
+  } = useIsOpenDblClick();
 
   const handleOnOptionClick = (option: string) => {
     if (!selection.some((current) => current === option)) {
-      //NOT already selected
+      // NOT already selected
       if (!multiSelect) {
         setSelection([option]);
         updateMyData(dataId, { type: option });
@@ -29,16 +31,14 @@ const DropdownCell = ({
         setSelection([...selection, option]);
         updateMyData(dataId, { type: [...selection, option].toString() });
       }
-    } else {
-      if (selection.length > 1 || allowEmpty) {
-        //remove options if multiselect or allowEmpty are enabled
-        let selectionAfterRemoval = selection;
-        selectionAfterRemoval = selectionAfterRemoval.filter(
-          (current) => current != option
-        );
-        setSelection([...selectionAfterRemoval]);
-        updateMyData(dataId, { type: [...selectionAfterRemoval].toString() });
-      }
+    } else if (selection.length > 1 || allowEmpty) {
+      // remove options if multiselect or allowEmpty are enabled
+      let selectionAfterRemoval = selection;
+      selectionAfterRemoval = selectionAfterRemoval.filter(
+        (current) => current != option,
+      );
+      setSelection([...selectionAfterRemoval]);
+      updateMyData(dataId, { type: [...selectionAfterRemoval].toString() });
     }
 
     setIsOpen(false);
@@ -53,15 +53,14 @@ const DropdownCell = ({
 
   const clickOutsideRef = React.useRef<HTMLDivElement | null>(null);
 
-  const [referenceElement, setReferenceElement] =
-    useState<HTMLDivElement | null>(null);
+  const [referenceElement, setReferenceElement] = useState<HTMLDivElement | null>(null);
 
   const [popperElement, setPopperElement] = useState<HTMLDivElement | null>(
-    null
+    null,
   );
 
   const { styles, attributes } = usePopper(referenceElement, popperElement, {
-    placement: "bottom",
+    placement: 'bottom',
   });
 
   const closeDropdown = useCallback(() => {
@@ -69,8 +68,8 @@ const DropdownCell = ({
   }, []);
 
   const indicatorColors = {
-    clicked: "#60a5fa",
-    nonClicked: "#1f2937",
+    clicked: '#60a5fa',
+    nonClicked: '#1f2937',
   };
 
   useInterval(
@@ -78,13 +77,13 @@ const DropdownCell = ({
       setIsOpen(false);
     },
     // Delay in milliseconds or null to stop it
-    isHalfOpen ? 400 : null
+    isHalfOpen ? 400 : null,
   );
 
   const renderDropdown = () => (
     <ul className="shadow-dropdown mt-[20px] w-full">
       {options.map((option, idx) => (
-        <li className={`select-none list-none bg-white`} key={idx}>
+        <li className={'select-none list-none bg-white'} key={idx}>
           <button
             type="button"
             className={`
@@ -110,12 +109,9 @@ const DropdownCell = ({
     </ul>
   );
 
-  const modalClassname =
-    "m-auto flex h-[30vh] w-[50vw] flex-col items-center rounded-xl bg-orange-500 py-0 px-8";
+  const modalClassname = 'm-auto flex h-[30vh] w-[50vw] flex-col items-center rounded-xl bg-orange-500 py-0 px-8';
 
-  const backdropClassname =
-    "bg-[#00000000] absolute top-0 left-0 h-full w-full grid justify-center content-center";
-
+  const backdropClassname = 'bg-[#00000000] absolute top-0 left-0 h-full w-full grid justify-center content-center';
 
   const popperData = {
     ref: setPopperElement,

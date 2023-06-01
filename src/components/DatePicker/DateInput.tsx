@@ -1,5 +1,5 @@
-import React, { useState } from "react"
-import NumberInput from "../NumberInput/NumberInput"
+import React, { useState } from 'react';
+import NumberInput from '../NumberInput/NumberInput';
 
 interface IProps {
   initDay?: number
@@ -8,44 +8,44 @@ interface IProps {
 }
 
 function DateInput({ initDay, initMonth, initYear }: IProps) {
-  const [day, setDay] = useState(initDay || 1)
-  const [month, setMonth] = useState(initMonth || 1)
-  const [year, setYear] = useState(initYear || 2911)
+  const [day, setDay] = useState(initDay || 1);
+  const [month, setMonth] = useState(initMonth || 1);
+  const [year, setYear] = useState(initYear || 2911);
 
   return (
     // className={"flex"}>
     <div className="flex justify-center rounded-xl shadow-md focus:border-indigo-300 focus:ring focus:ring-indigo-200">
       <NumberInput
-        name={"dayInput"}
+        name={'dayInput'}
         numberValue={day}
         setNumberValue={setDay}
         maxValue={31}
         minValue={0}
         visualLength={2}
-        placeHolder={"DD"}
+        placeHolder={'DD'}
       />
       <span>/</span>
       <NumberInput
-        name={"monthInput"}
+        name={'monthInput'}
         numberValue={month}
         setNumberValue={setMonth}
         maxValue={12}
         minValue={0}
         visualLength={2}
-        placeHolder={"MM"}
+        placeHolder={'MM'}
       />
       <span>/</span>
       <NumberInput
-        name={"yearInput"}
+        name={'yearInput'}
         numberValue={year}
         setNumberValue={setYear}
         maxValue={9999}
         minValue={0}
         visualLength={4}
-        placeHolder={"YYYY"}
+        placeHolder={'YYYY'}
       />
     </div>
-  )
+  );
 }
 
-export default DateInput
+export default DateInput;

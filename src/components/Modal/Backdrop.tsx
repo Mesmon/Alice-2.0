@@ -1,4 +1,4 @@
-import { motion } from "framer-motion";
+import { motion } from 'framer-motion';
 
 interface Iprops {
   children: React.ReactNode;
@@ -10,8 +10,7 @@ const Backdrop = ({
   children,
   backdropClassname,
   onClick,
-}: Iprops) => {
-  return (
+}: Iprops) => (
     <motion.div
       className={backdropClassname}
       onClick={onClick}
@@ -21,7 +20,6 @@ const Backdrop = ({
     >
       {children}
     </motion.div>
-  );
-};
+);
 
 export default Backdrop;

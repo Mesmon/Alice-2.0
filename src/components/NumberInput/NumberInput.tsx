@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react';
 
 interface Iprops {
   numberValue: number;
@@ -19,10 +19,10 @@ const NumberInput = ({
   visualLength,
   placeHolder,
 }: Iprops) => {
-  const width = visualLength ? `w-${visualLength * 2}` : "w-4";
+  const width = visualLength ? `w-${visualLength * 2}` : 'w-4';
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    let newNumberValue = parseInt(event.target.value) || minValue;
+    const newNumberValue = parseInt(event.target.value) || minValue;
     if (isManualInputOk(newNumberValue)) setNumberValue(newNumberValue);
   };
 
@@ -37,18 +37,16 @@ const NumberInput = ({
   1;
   const formatValueDisplay = () => {
     if (numberValue === 0) {
-      if (placeHolder) return "";
-      else {
-        if (visualLength) return "0".repeat(visualLength);
-        else return "0";
-      }
+      if (placeHolder) return '';
+
+      if (visualLength) return '0'.repeat(visualLength);
+      return '0';
     }
 
     let numberToDisplay = numberValue.toString();
     if (visualLength) {
       let numberString = numberValue.toString();
-      numberString =
-        "0".repeat(visualLength - numberString.length) + numberString;
+      numberString = '0'.repeat(visualLength - numberString.length) + numberString;
       numberToDisplay = numberString;
     }
     return numberToDisplay;

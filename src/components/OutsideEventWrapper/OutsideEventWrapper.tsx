@@ -1,6 +1,6 @@
-import { RefObject } from "react";
-import useClickOutside from "../../hooks/useClickOutside";
-import useOnScrollOutside from "../../hooks/useOnScrollOutside";
+import { RefObject } from 'react';
+import useClickOutside from '../../hooks/useClickOutside';
+import useOnScrollOutside from '../../hooks/useOnScrollOutside';
 
 interface IOutsideEventWrapper<T> {
   parentRef: RefObject<T>;
@@ -10,9 +10,9 @@ interface IOutsideEventWrapper<T> {
 }
 
 /**
- * 
- * @param param0 
- * @returns 
+ *
+ * @param param0
+ * @returns
  */
 export function OutsideEventWrapper<T extends HTMLElement = HTMLElement>({
   parentRef,

@@ -1,5 +1,8 @@
-import luxon from "luxon";
-import React, { Reducer, useEffect, useRef, useState } from "react";
+import luxon from 'luxon';
+import React, {
+  Reducer, useEffect, useRef, useState,
+} from 'react';
+import { getLogger } from '../../utils/logging/log-util';
 
 interface IProps {
   initDay?: number;
@@ -13,11 +16,13 @@ interface IProps {
   placeHolder?: string | number;
   date: luxon.DateTime;
   updateDate: React.Dispatch<
-    React.ReducerAction<Reducer<string, { type: string; value: number }>>
+  React.ReducerAction<Reducer<string, { type: string; value: number }>>
   >;
 }
 
-type selectionOperation = "add" | "sub";
+type selectionOperation = 'add' | 'sub';
+
+const logger = getLogger('DateInputText');
 
 const DateInputText = ({ date, updateDate }: IProps) => {
   const dateText = useRef<HTMLInputElement>(null);
@@ -32,13 +37,15 @@ const DateInputText = ({ date, updateDate }: IProps) => {
 
   const manageSelectionIndex = (action: selectionOperation) => {
     switch (action) {
-      case "add":
+      case 'add':
         if (selectionIndex + 1 > 2) setSelectionIndex(2);
         else setSelectionIndex(selectionIndex + 1);
         break;
-      case "sub":
+      case 'sub':
         if (selectionIndex - 1 < 0) setSelectionIndex(0);
         else setSelectionIndex(selectionIndex - 1);
+        break;
+      default:
         break;
     }
   };
@@ -55,16 +62,16 @@ const DateInputText = ({ date, updateDate }: IProps) => {
   }, [selection]);
 
   const keyDownHandler = (event: React.KeyboardEvent<HTMLDivElement>) => {
-    console.log(event.code);
-    if (event.code === "ArrowLeft") {
-      event.preventDefault()
-      manageSelectionIndex("sub");
+    logger.debug(event.code);
+    if (event.code === 'ArrowLeft') {
+      event.preventDefault();
+      manageSelectionIndex('sub');
     }
-    if (event.code === "ArrowRight") {
-      event.preventDefault()
-      manageSelectionIndex("add");
+    if (event.code === 'ArrowRight') {
+      event.preventDefault();
+      manageSelectionIndex('add');
     }
-    if (event.code === "Tab") event.preventDefault();
+    if (event.code === 'Tab') event.preventDefault();
   };
 
   return (
@@ -74,11 +81,11 @@ const DateInputText = ({ date, updateDate }: IProps) => {
         ref={dateText}
         className="outline-none ring-2 selection:bg-red-300"
         onKeyDown={keyDownHandler}
-        value={date.toFormat("dd/MM/yyyy")}
+        value={date.toFormat('dd/MM/yyyy')}
       />
       <input
         type="number"
-        onChange={() => updateDate({ type: "updateDay", value: 3 })}
+        onChange={() => updateDate({ type: 'updateDay', value: 3 })}
       ></input>
     </div>
   );

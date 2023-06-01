@@ -1,6 +1,6 @@
-import mongoose, { Document, Model } from "mongoose";
+import mongoose, { Document, Model } from 'mongoose';
 
-import { IMovie } from "../@types";
+import { IMovie } from '../@types';
 
 type MovieDocument = Document & IMovie;
 
@@ -18,23 +18,24 @@ const MovieSchema = new mongoose.Schema<MovieDocument>(
       type: Date,
       required: true,
     },
-    rating: {
-      type: Number,
-      required: true,
-    },
-    votes: {
-      type: Number,
-      required: true,
+    imdb: {
+      rating: {
+        type: Number,
+        required: true,
+      },
+      votes: {
+        type: Number,
+        required: true,
+      },
     },
     type: {
       type: String,
       required: true,
     },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
-const Movie: Model<MovieDocument> =
-  mongoose.models.Movie || mongoose.model<MovieDocument>("Movie", MovieSchema);
+const Movie: Model<MovieDocument> = mongoose.models.Movie || mongoose.model<MovieDocument>('Movie', MovieSchema);
 
 export default Movie;

@@ -1,18 +1,15 @@
-import React, { useEffect, useState } from "react";
-import DateInput from "../../DatePicker/DateInput";
+import React, { useEffect, useState } from 'react';
+import DateInput from '../../DatePicker/DateInput';
 
 export const customFilterFunction = (
   rows: any[],
   id: any,
-  filterValue: any[]
+  filterValue: any[],
 ) => {
   if (!Array.isArray(filterValue) || !filterValue.length) {
     return rows;
-  } else {
-    return rows.filter((row: { original: { eye_color: any } }) =>
-      filterValue.includes(row.original.eye_color)
-    );
   }
+  return rows.filter((row: { original: { eye_color: any } }) => filterValue.includes(row.original.eye_color));
 };
 
 const ColumnFilter = ({
@@ -26,12 +23,9 @@ const ColumnFilter = ({
   const HandleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target;
 
-    // console.log(value)
 
     if (filteredColors.includes(value)) {
-      setFilteredColors((oldFiltedColors: any[]) =>
-        oldFiltedColors.filter((color: any) => color !== value)
-      );
+      setFilteredColors((oldFiltedColors: any[]) => oldFiltedColors.filter((color: any) => color !== value));
     } else {
       setFilteredColors(() => [...filteredColors, value]);
     }

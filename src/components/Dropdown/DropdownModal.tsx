@@ -1,7 +1,7 @@
-import { motion } from "framer-motion";
-import React from "react";
-import Backdrop from "../Modal/Backdrop";
-import { Portal } from "../Portal/Portal";
+import { motion } from 'framer-motion';
+import React from 'react';
+import Backdrop from '../Modal/Backdrop';
+import { Portal } from '../Portal/Portal';
 
 interface Iprops {
   modalOpen: boolean;
@@ -13,10 +13,10 @@ interface Iprops {
     ref: React.Dispatch<React.SetStateAction<HTMLDivElement | null>>;
     style: React.CSSProperties;
     attributes:
-      | {
-          [key: string]: string;
-        }
-      | undefined;
+    | {
+      [key: string]: string;
+    }
+    | undefined;
   };
 }
 const DropdownModal = ({
@@ -26,8 +26,7 @@ const DropdownModal = ({
   modalClassname,
   backdropClassname,
   popperData,
-}: Iprops) => {
-  return modalOpen ? (
+}: Iprops) => (modalOpen ? (
     <Portal>
       <Backdrop
         onClick={handleClose}
@@ -37,7 +36,7 @@ const DropdownModal = ({
           ref={popperData?.ref}
           style={popperData?.style}
           {...popperData?.attributes}
-          
+
           onClick={(e) => e.stopPropagation()}
           className={modalClassname}
         >
@@ -45,7 +44,6 @@ const DropdownModal = ({
         </div>
       </Backdrop>
     </Portal>
-  ) : null;
-};
+) : null);
 
 export default DropdownModal;

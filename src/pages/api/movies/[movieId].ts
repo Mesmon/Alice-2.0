@@ -1,10 +1,13 @@
-import type { NextApiRequest, NextApiResponse } from "next";
+import type { NextApiRequest, NextApiResponse } from 'next';
 
-import nextConnect from "next-connect";
+import nextConnect from 'next-connect';
 
-import database from "../../../../middlewares/database";
-import Movie from "../../../../models/Movie";
+import database from '../../../middlewares/database';
+import Movie from '../../../models/Movie';
 
+import { getLogger } from '../../../utils/logging/log-util';
+
+const logger = getLogger('api/movies/[movieId]');
 const handler = nextConnect();
 handler.use(database);
 
@@ -14,22 +17,22 @@ handler
       const movies = await Movie.find({ _id: `${req.query.movieId}` }).lean();
       res.status(200).json(movies);
     } catch (error: any) {
-      console.log(error.message);
+      logger.error(error.message);
 
-      res.status(500).json({ message: "Server Error" });
+      res.status(500).json({ message: 'Server Error' });
     }
   })
   .patch(async (req: NextApiRequest, res: NextApiResponse) => {
     try {
       const movie = await Movie.findOneAndUpdate(
         { _id: req.query.movieId },
-        req.body
+        req.body,
       ).lean();
       res.status(201).json(movie);
     } catch (error: any) {
-      console.log(error.message);
+      logger.error(error.message);
 
-      res.status(500).json({ message: "Server Error" });
+      res.status(500).json({ message: 'Server Error' });
     }
   });
 
