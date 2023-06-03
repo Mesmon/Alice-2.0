@@ -8,14 +8,13 @@ import { ReactQueryDevtools } from 'react-query/devtools';
 import { motion } from 'framer-motion';
 import { create } from 'domain';
 import Table from '../components/Table/Table';
-import ColumnFilter, {
-  customFilterFunction,
-} from '../components/Table/ColumnFilter/ColumnFilter';
 import DropdownCell from '../components/Dropdown/Dropdown';
 import { IMovie } from '../@types';
 import useMovies from '../hooks/data/useMovies';
 import useSaveMovie from '../hooks/data/useSaveMovie';
 import AnimatedModal from '../components/Modal/AnimatedModal';
+import { getLogger } from '../utils/logging/log-util';
+
 import Link from 'next/link';
 
 const TablePage: NextPage = () => {
@@ -63,12 +62,28 @@ const TablePage: NextPage = () => {
 
   const [filteredColors, setFilteredColors] = useState<Array<string>>([]);
 
+  const logger = getLogger('tablePage');
+
+
+  const myCustomFilter = (row: Row<IMovie>, id: string, filterValue: any[]) => {
+    logger.info(`No filter value provided ${row}`);
+    if (!Array.isArray(filterValue) || !filterValue.length) {
+      return false;
+    }
+    if (Array.isArray(filterValue))
+      if (filterValue.includes(row.original.type))
+        return true;
+    return false
+  };
+
+
   const columnHelper = createColumnHelper<IMovie>();
 
   const columns = [
     columnHelper.accessor('_id', { header: 'ID', cell: info => info.getValue() }),
     columnHelper.accessor('type', {
-      header: 'Type', cell: info => {
+      header: 'Type',
+      cell: info => {
         return <DropdownCell
           value={info.getValue()}
           options={items}
@@ -76,6 +91,8 @@ const TablePage: NextPage = () => {
           updateMyData={updateMyData}
         />
       },
+      filterFn: myCustomFilter,
+
     }),
     columnHelper.accessor('title', { header: 'Title', cell: info => info.getValue() }),
     columnHelper.accessor('runtime', { header: 'Runtime', cell: info => info.getValue() }),
@@ -110,10 +127,6 @@ const TablePage: NextPage = () => {
 
   return (
     <div className="w-full bg-slate-200 dark:bg-slate-900">
-      {/* <ColumnFilter
-        filteredColors={filteredColors}
-        setFilteredColors={setFilteredColors}
-      /> */}
       <motion.button
         whileHover={{ scale: 1.1 }}
         whileTap={{ scale: 0.9 }}
@@ -135,9 +148,9 @@ const TablePage: NextPage = () => {
         data={data}
         updateMyData={updateMyData}
         isHeader
-      // selectedColors={filteredColors}
+        customFilter={myCustomFilter}
         rowOnClick={(row: Row<IMovie>) => makeModal(row)}
-        ignoreRowOnClickColumns={['type']}  
+        ignoreRowOnClickColumns={['type']}
       />
       <ReactQueryDevtools />
     </div>

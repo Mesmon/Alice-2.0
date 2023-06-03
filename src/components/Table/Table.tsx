@@ -8,23 +8,33 @@ import {
   Column,
   FilterFn,
   getFilteredRowModel,
+  ColumnFiltersState,
 } from '@tanstack/react-table';
 import { rankItem } from '@tanstack/match-sorter-utils';
 import { ITableProps } from '../../@types';
 import GlobalTableFilter from './GlobalTableFilter/GlobalTableFilter';
+import ColumnFilter from './ColumnFilter/ColumnFilter';
+
+declare module '@tanstack/table-core' {
+  interface FilterFns {
+    myCustomFilter: FilterFn<unknown>
+  }
+}
 
 export default function Table({
   columns,
   data,
   updateMyData,
   isHeader = null,
-  // selectedColors,
-  // customFilter,
+  customFilter,
   rowOnClick,
   ignoreRowOnClickColumns,
 }: ITableProps) {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [globalFilter, setGlobalFilter] = useState('');
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>(
+    [],
+  );
 
   const fuzzyFilter: FilterFn<any> = (row, columnId, value, addMeta) => {
     // Rank the item
@@ -42,7 +52,7 @@ export default function Table({
   const table = useReactTable({
     data,
     columns,
-    state: { sorting, globalFilter },
+    state: { sorting, globalFilter, columnFilters },
     meta: {
       updateData: updateMyData,
     },
@@ -51,6 +61,10 @@ export default function Table({
     getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     onGlobalFilterChange: setGlobalFilter,
+    onColumnFiltersChange: setColumnFilters,
+    filterFns: {
+      myCustomFilter: customFilter!,
+    },
     globalFilterFn: fuzzyFilter,
     debugTable: true,
   });
@@ -110,6 +124,10 @@ export default function Table({
 
   return (
     <>
+     <ColumnFilter
+        table={table}
+        columnId="type"
+      />
       <p>row amount: {table.getRowModel().rows.length}</p>
       {renderGlobalFilter()}
 

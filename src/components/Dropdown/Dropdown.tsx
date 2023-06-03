@@ -1,9 +1,7 @@
 import { CheckIcon } from '@heroicons/react/solid';
-import React, { useCallback, useEffect, useState } from 'react';
+import { useCallback, useState } from 'react';
 import { usePopper } from 'react-popper';
-import { Portal } from '../Portal/Portal';
 import { useIsOpenDblClick } from '../../hooks/useMaxTwoCounter';
-import OutsideEventWrapper from '../OutsideEventWrapper/OutsideEventWrapper';
 import useInterval from '../../hooks/useInterval';
 import IDropdownProps from '../../@types/IDropdownProps';
 import DropdownModal from './DropdownModal';
@@ -17,6 +15,7 @@ const DropdownCell = ({
   allowEmpty = false,
 }: IDropdownProps) => {
   const [selection, setSelection] = useState<Array<string>>([value]);
+
   const {
     isOpen, setIsOpen, incCount, isHalfOpen,
   } = useIsOpenDblClick();
@@ -35,12 +34,11 @@ const DropdownCell = ({
       // remove options if multiselect or allowEmpty are enabled
       let selectionAfterRemoval = selection;
       selectionAfterRemoval = selectionAfterRemoval.filter(
-        (current) => current != option,
+        (current) => current !== option,
       );
       setSelection([...selectionAfterRemoval]);
       updateMyData(dataId, { type: [...selectionAfterRemoval].toString() });
     }
-
     setIsOpen(false);
   };
 
@@ -50,8 +48,6 @@ const DropdownCell = ({
     }
     return false;
   };
-
-  const clickOutsideRef = React.useRef<HTMLDivElement | null>(null);
 
   const [referenceElement, setReferenceElement] = useState<HTMLDivElement | null>(null);
 
@@ -109,7 +105,8 @@ const DropdownCell = ({
     </ul>
   );
 
-  const modalClassname = 'm-auto flex h-[30vh] w-[50vw] flex-col items-center rounded-xl bg-orange-500 py-0 px-8';
+  // const modalClassname =
+  // 'm-auto flex h-[30vh] w-[50vw] flex-col items-center rounded-xl bg-orange-500 py-0 px-8';
 
   const backdropClassname = 'bg-[#00000000] absolute top-0 left-0 h-full w-full grid justify-center content-center';
 
@@ -167,26 +164,6 @@ const DropdownCell = ({
       >
         {renderDropdown()}
       </DropdownModal>
-      {/* {isOpen && (
-        //   render dropdown
-        <Portal>
-          <div
-            ref={setPopperElement}
-            style={styles.popper}
-            {...attributes.popper}
-          >
-            <div ref={clickOutsideRef}>
-              <OutsideEventWrapper
-                parentRef={clickOutsideRef}
-                onClickOutsideHandler={closeDropdown}
-                onScrollOutsideHandler={closeDropdown}
-              >
-                {renderDropdown()}
-              </OutsideEventWrapper>
-            </div>
-          </div>
-        </Portal>
-      )} */}
     </>
   );
 };

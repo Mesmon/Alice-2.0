@@ -16,7 +16,7 @@ const useSaveMovie = () => {
     {
       // 💡 response of the mutation is passed to onSuccess
       onSuccess: (updatedMovie: IMovie) => {
-        logger.info(updatedMovie);
+        logger.info(`Update movie - ${updatedMovie.title}`);
         queryClient.setQueryData(['movies', updatedMovie._id], updatedMovie);
       },
     },

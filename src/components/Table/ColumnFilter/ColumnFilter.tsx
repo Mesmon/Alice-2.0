@@ -1,103 +1,110 @@
-import React, { useEffect, useState } from 'react';
+// import React, { useEffect, useState } from 'react';
+import { Column, Table } from '@tanstack/react-table';
 import DateInput from '../../DatePicker/DateInput';
 
-export const customFilterFunction = (
-  rows: any[],
-  id: any,
-  filterValue: any[],
-) => {
-  if (!Array.isArray(filterValue) || !filterValue.length) {
-    return rows;
-  }
-  return rows.filter((row: { original: { eye_color: any } }) => filterValue.includes(row.original.eye_color));
-};
+// export const customFilterFunction = (
+//   row: any,
+// ) => {
+//   if (!Array.isArray(filterValue) || !filterValue.length) {
+//     return rows;
+//   }
+//   return rows.filter(
+//     (row: { original: { type: string } }) => filterValue.includes(row.original.type),
+//   );
+// };
+interface DataTableFilterProps<TData, TValue> {
+  column?: Column<TData, TValue>
+}
 
-const ColumnFilter = ({
-  filteredColors,
-  setFilteredColors,
-}: {
-  filteredColors: any;
-  setFilteredColors: any;
-}) => {
+export const DataTableFilter = <TData, TValue>({
+  column,
+}: DataTableFilterProps<TData, TValue>) => {
   const today = new Date();
+
   const HandleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const selectedValues = new Set(column?.getFilterValue() as string[]);
     const { value } = e.target;
+    const isSelected = selectedValues.has(value);
 
-
-    if (filteredColors.includes(value)) {
-      setFilteredColors((oldFiltedColors: any[]) => oldFiltedColors.filter((color: any) => color !== value));
+    if (isSelected) {
+      selectedValues.delete(value);
     } else {
-      setFilteredColors(() => [...filteredColors, value]);
+      selectedValues.add(value);
     }
-  };
+    const filterValues = Array.from(selectedValues);
 
-  return (
-    <div>
-      <div className="flex space-x-2 my-4 justify-center ">
-        <div>
-          <input
-            type="checkbox"
-            value="blue"
-            className="hidden"
-            id="chkBoxblue"
-            onChange={HandleChange}
-          />
-          <label
-            htmlFor="chkBoxblue"
-            className="select-none transition duration-100 cursor-pointer bg-blue-500 hover:bg-blue-700 label-checked-hover:bg-blue-700 label-checked:bg-blue-600 label-checked:ring-blue-600 label-checked:ring-4 label-checked:ring-opacity-50 text-white font-bold py-2 px-4 rounded-full"
-          >
-            blue
-          </label>
-        </div>
-        <div>
-          <input
-            type="checkbox"
-            value="red"
-            className="hidden"
-            id="chkBoxred"
-            onChange={HandleChange}
-          />
-          <label
-            htmlFor="chkBoxred"
-            className="select-none cursor-pointer bg-red-500 hover:bg-red-700 label-checked-hover:bg-red-700 label-checked:bg-red-600 label-checked:ring-red-600 label-checked:ring-4 label-checked:ring-opacity-50 text-white font-bold py-2 px-4 rounded-full"
-          >
-            red
-          </label>
-        </div>
-        <div>
-          <input
-            type="checkbox"
-            value="yellow"
-            className="hidden"
-            id="chkBoxYellow"
-            onChange={HandleChange}
-          />
-          <label
-            htmlFor="chkBoxYellow"
-            className="select-none cursor-pointer bg-yellow-500 hover:bg-yellow-700 label-checked-hover:bg-yellow-700 label-checked:bg-yellow-600 label-checked:ring-yellow-600 label-checked:ring-4 label-checked:ring-opacity-50 text-white font-bold py-2 px-4 rounded-full"
-          >
-            yellow
-          </label>
-        </div>
-        <div>
-          <input
-            type="checkbox"
-            value="brown"
-            className="hidden"
-            id="chkBoxBrown"
-            onChange={HandleChange}
-          />
-          <label
-            htmlFor="chkBoxBrown"
-            className="select-none label-checked cursor-pointer bg-brown-500 hover:bg-brown-700 label-checked-hover:bg-brown-700 label-checked:bg-brown-600 label-checked:ring-brown-600 label-checked:ring-4 label-checked:ring-opacity-50 text-white font-bold py-2 px-4 rounded-full"
-          >
-            brown
-          </label>
-        </div>
+    column?.setFilterValue(
+      filterValues.length ? filterValues : undefined
+    );
+  };
+  return <>
+    {/* <div>
+      {selectedValues.size} selected
+    </div> */}
+    <div className="flex space-x-2 my-4 justify-center ">
+      <div>
+        <input
+          type="checkbox"
+          value="bruh"
+          className="hidden"
+          id="chkBoxblue"
+          onChange={HandleChange}
+        />
+        <label
+          htmlFor="chkBoxblue"
+          className="select-none transition duration-100 cursor-pointer bg-blue-500 hover:bg-blue-700 label-checked-hover:bg-blue-700 label-checked:bg-blue-600 label-checked:ring-blue-600 label-checked:ring-4 label-checked:ring-opacity-50 text-white font-bold py-2 px-4 rounded-full"
+        >
+          bruh
+        </label>
+      </div>
+      <div>
+        <input
+          type="checkbox"
+          value="occured"
+          className="hidden"
+          id="chkBoxred"
+          onChange={HandleChange}
+        />
+        <label
+          htmlFor="chkBoxred"
+          className="select-none cursor-pointer bg-red-500 hover:bg-red-700 label-checked-hover:bg-red-700 label-checked:bg-red-600 label-checked:ring-red-600 label-checked:ring-4 label-checked:ring-opacity-50 text-white font-bold py-2 px-4 rounded-full"
+        >
+          occured
+        </label>
+      </div>
+      <div>
+        <input
+          type="checkbox"
+          value="moment"
+          className="hidden"
+          id="chkBoxYellow"
+          onChange={HandleChange}
+        />
+        <label
+          htmlFor="chkBoxYellow"
+          className="select-none cursor-pointer bg-yellow-500 hover:bg-yellow-700 label-checked-hover:bg-yellow-700 label-checked:bg-yellow-600 label-checked:ring-yellow-600 label-checked:ring-4 label-checked:ring-opacity-50 text-white font-bold py-2 px-4 rounded-full"
+        >
+          moment
+        </label>
+      </div>
+      <div>
+        <input
+          type="checkbox"
+          value="brown"
+          className="hidden"
+          id="chkBoxBrown"
+          onChange={HandleChange}
+        />
+        <label
+          htmlFor="chkBoxBrown"
+          className="select-none label-checked cursor-pointer bg-brown-500 hover:bg-brown-700 label-checked-hover:bg-brown-700 label-checked:bg-brown-600 label-checked:ring-brown-600 label-checked:ring-4 label-checked:ring-opacity-50 text-white font-bold py-2 px-4 rounded-full"
+        >
+          brown
+        </label>
       </div>
       <div className="flex flex-row-reverse ">
-        <div className="flex pr-10">
-          <DateInput
+         <div className="flex pr-10">
+           <DateInput
             initDay={27}
             initMonth={today.getMonth() + 1}
             initYear={today.getFullYear()}
@@ -112,7 +119,120 @@ const ColumnFilter = ({
         </div>
       </div>
     </div>
-  );
+  </>;
 };
 
-export default ColumnFilter;
+interface DataTableToolbarProps<TData> {
+  table: Table<TData>
+  columnId:string
+}
+
+export const DataTableToolbar = <TData,>({
+  table,
+  columnId
+}: DataTableToolbarProps<TData>) => <DataTableFilter
+    column={table.getColumn(columnId)}
+  />;
+
+export default DataTableToolbar;
+
+// const ColumnFilter = ({table}:{ DataTableToolbarProps<TData>}) => {
+//   const bruh = table;
+//   const today = new Date();
+//   const HandleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+//     const { value } = e.target;
+
+//     if (filteredColors.includes(value)) {
+//       setFilteredColors(
+//         (oldFiltedColors: any[]) => oldFiltedColors.filter((color: any) => color !== value),
+//       );
+//     } else {
+//       setFilteredColors(() => [...filteredColors, value]);
+//     }
+//   };
+
+//   return (
+//     <div>
+//       <div className="flex space-x-2 my-4 justify-center ">
+//         <div>
+//           <input
+//             type="checkbox"
+//             value="bruh"
+//             className="hidden"
+//             id="chkBoxblue"
+//             onChange={HandleChange}
+//           />
+//           <label
+//             htmlFor="chkBoxblue"
+//             className="select-none transition duration-100 cursor-pointer bg-blue-500 hover:bg-blue-700 label-checked-hover:bg-blue-700 label-checked:bg-blue-600 label-checked:ring-blue-600 label-checked:ring-4 label-checked:ring-opacity-50 text-white font-bold py-2 px-4 rounded-full"
+//           >
+//             bruh
+//           </label>
+//         </div>
+//         <div>
+//           <input
+//             type="checkbox"
+//             value="occured"
+//             className="hidden"
+//             id="chkBoxred"
+//             onChange={HandleChange}
+//           />
+//           <label
+//             htmlFor="chkBoxred"
+//             className="select-none cursor-pointer bg-red-500 hover:bg-red-700 label-checked-hover:bg-red-700 label-checked:bg-red-600 label-checked:ring-red-600 label-checked:ring-4 label-checked:ring-opacity-50 text-white font-bold py-2 px-4 rounded-full"
+//           >
+//             occured
+//           </label>
+//         </div>
+//         <div>
+//           <input
+//             type="checkbox"
+//             value="moment"
+//             className="hidden"
+//             id="chkBoxYellow"
+//             onChange={HandleChange}
+//           />
+//           <label
+//             htmlFor="chkBoxYellow"
+//             className="select-none cursor-pointer bg-yellow-500 hover:bg-yellow-700 label-checked-hover:bg-yellow-700 label-checked:bg-yellow-600 label-checked:ring-yellow-600 label-checked:ring-4 label-checked:ring-opacity-50 text-white font-bold py-2 px-4 rounded-full"
+//           >
+//             moment
+//           </label>
+//         </div>
+//         <div>
+//           <input
+//             type="checkbox"
+//             value="brown"
+//             className="hidden"
+//             id="chkBoxBrown"
+//             onChange={HandleChange}
+//           />
+//           <label
+//             htmlFor="chkBoxBrown"
+//             className="select-none label-checked cursor-pointer bg-brown-500 hover:bg-brown-700 label-checked-hover:bg-brown-700 label-checked:bg-brown-600 label-checked:ring-brown-600 label-checked:ring-4 label-checked:ring-opacity-50 text-white font-bold py-2 px-4 rounded-full"
+//           >
+//             brown
+//           </label>
+//         </div>
+//       </div>
+//       <div className="flex flex-row-reverse ">
+//         <div className="flex pr-10">
+//           <DateInput
+//             initDay={27}
+//             initMonth={today.getMonth() + 1}
+//             initYear={today.getFullYear()}
+//           />
+//         </div>
+//         <div className="flex pr-6">
+//           <DateInput
+//             initDay={today.getDate()}
+//             initMonth={today.getMonth() + 1}
+//             initYear={today.getFullYear()}
+//           />
+//         </div>
+//       </div>
+//     </div>
+//   );
+// };
+
+// export default ColumnFilter;

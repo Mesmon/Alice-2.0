@@ -1,4 +1,4 @@
-import { ColumnDef } from '@tanstack/react-table';
+import { ColumnDef, FilterFn } from '@tanstack/react-table';
 import IMovie from './IMovie';
 
 export default interface ITableProps {
@@ -8,7 +8,7 @@ export default interface ITableProps {
   updateMyData?: (dataId: string | number, values: Partial<IMovie>) => void;
   isHeader?: any;
   selectedColors?: Array<string>;
-  customFilter?: string;
+  customFilter?: FilterFn<any>;
   rowOnClick?: (args: any) => any;
   ignoreRowOnClickColumns?: Array<string>;
 }
